@@ -50,7 +50,8 @@ ALPHA-TRANSLATE/
 1. **Clone the Repository**
 
 ```bash
-git clone https://github.com/yourusername/alpha-translator.git
+git clone https://github.com/KaranSinghGaira007/CodeAlpha_Task_Language_Translator.git
+
 cd alpha-translator
 ```
 
