@@ -240,6 +240,16 @@
      }
  }
 
+ #detected-language{
+     display: none;
+     width: 90%;
+     background: #9dcffc;
+     color: #2857c6;
+     padding: 15px;
+     border-radius: 10px;
+     border-left: 4px solid #1744b4;
+ }
+
  .error-message {
      display: none;
      width: 90%;
