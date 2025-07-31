@@ -14,7 +14,7 @@ const detectedLangElement = document.getElementById('detected-language');
 
 const maxChars = 5000;
 
-// ✅ Language code to full name map
+// Language code to full name map
 const langCodeToName = {
     en: 'English',
     es: 'Spanish',
