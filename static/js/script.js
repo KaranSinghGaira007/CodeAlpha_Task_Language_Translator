@@ -10,8 +10,33 @@ const toLangSelect = document.getElementById('to-language');
 const clearBtn = document.getElementById('clear-btn');
 const copyBtn = document.getElementById('copy-btn');
 const speakBtn = document.getElementById('speak-btn');
+const detectedLangElement = document.getElementById('detected-language');
 
 const maxChars = 5000;
+
+// ✅ Language code to full name map
+const langCodeToName = {
+    en: 'English',
+    es: 'Spanish',
+    fr: 'French',
+    de: 'German',
+    it: 'Italian',
+    pt: 'Portuguese',
+    ru: 'Russian',
+    ja: 'Japanese',
+    ko: 'Korean',
+    zh: 'Chinese',
+    ar: 'Arabic',
+    hi: 'Hindi',
+    th: 'Thai',
+    vi: 'Vietnamese',
+    nl: 'Dutch',
+    sv: 'Swedish',
+    da: 'Danish',
+    no: 'Norwegian',
+    fi: 'Finnish',
+    pl: 'Polish'
+};
 
 // Update character counter
 sourceText.addEventListener('input', () => {
@@ -55,16 +80,23 @@ translateBtn.addEventListener('click', async () => {
                 errorMessage.style.borderLeft = "4px solid #ffc107";
             }
 
-            // show detected language
+            // ✅ Show detected language name
             if (data.detectedSourceLanguage && fromLangSelect.value === "auto") {
-                console.log("Detected language:", data.detectedSourceLanguage);
+                const code = data.detectedSourceLanguage.trim().toLowerCase();
+                const langName = langCodeToName[code] || code.toUpperCase();
+                detectedLangElement.textContent = `Detected language: ${langName}`;
+                detectedLangElement.style.display = 'block';
+            } else {
+                detectedLangElement.style.display = 'none';
             }
 
         } else {
             showError(data.error || 'Translation failed. Try again.');
+            detectedLangElement.style.display = 'none';
         }
     } catch (err) {
         showError('Translation failed. Please try again.');
+        detectedLangElement.style.display = 'none';
     } finally {
         setLoading(false);
     }
@@ -76,6 +108,7 @@ clearBtn.addEventListener('click', () => {
     targetText.value = '';
     charCounter.textContent = '0 / 5000';
     hideError();
+    detectedLangElement.style.display = 'none';
 });
 
 // Copy translation
@@ -87,6 +120,7 @@ copyBtn.addEventListener('click', () => {
     setTimeout(() => copyBtn.textContent = '📋 Copy Translation', 2000);
 });
 
+// Speak translation
 speakBtn.addEventListener('click', () => {
     const text = targetText.value;
     if (!('speechSynthesis' in window) || !text) return;
@@ -119,7 +153,7 @@ speakBtn.addEventListener('click', () => {
 
     function speakWithVoices() {
         const voices = speechSynthesis.getVoices();
-        const voice = voices.find(v => v.lang === langCode) || voices[0];
+        const voice = voices.find(v => v.lang === langCode);
 
         if (voice) {
             const utterance = new SpeechSynthesisUtterance(text);
@@ -131,15 +165,12 @@ speakBtn.addEventListener('click', () => {
         }
     }
 
-    // If voices already loaded, speak immediately
     if (speechSynthesis.getVoices().length > 0) {
         speakWithVoices();
     } else {
-        // Wait for voices to be loaded
         speechSynthesis.onvoiceschanged = speakWithVoices;
     }
 });
-
 
 // Helpers
 function showError(msg) {
